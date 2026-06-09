@@ -1,10 +1,13 @@
 import streamlit as st
 from matcher import calculate_match_score, find_missing_keywords
+from database import create_table, add_application, get_applications
 
 st.set_page_config(page_title="AI Job Application Tracker", page_icon="📄")
 
+create_table()
+
 st.title("AI Job Application Tracker")
-st.write("This app compares your resume with a job description and gives a match score.")
+st.write("This app compares your resume with a job description and tracks your job applications.")
 
 resume_text = st.text_area("Paste your resume text here", height=200)
 
@@ -42,5 +45,56 @@ if st.button("Analyze Match"):
         else:
             st.write("No major missing keywords found.")
 
+        st.session_state["latest_score"] = score
+
     else:
         st.warning("Please enter both resume text and job description.")
+
+
+st.divider()
+
+st.header("Save Job Application")
+
+company = st.text_input("Company Name")
+job_title = st.text_input("Job Title")
+status = st.selectbox(
+    "Application Status",
+    ["Interested", "Applied", "Interview", "Rejected", "Offer"],
+)
+notes = st.text_area("Notes")
+
+latest_score = st.session_state.get("latest_score", 0)
+
+if st.button("Save Application"):
+    if company.strip() and job_title.strip():
+        add_application(company, job_title, status, latest_score, notes)
+        st.success("Job application saved!")
+    else:
+        st.warning("Please enter company name and job title.")
+
+
+st.divider()
+
+st.header("Saved Job Applications")
+
+applications = get_applications()
+
+if applications:
+    for application in applications:
+        app_id = application[0]
+        company_name = application[1]
+        saved_job_title = application[2]
+        saved_status = application[3]
+        saved_score = application[4]
+        saved_notes = application[5]
+
+        st.write(f"**{company_name} — {saved_job_title}**")
+        st.write(f"Status: {saved_status}")
+        st.write(f"Match Score: {saved_score}%")
+
+        if saved_notes:
+            st.write(f"Notes: {saved_notes}")
+
+        st.write("---")
+else:
+    st.write("No saved applications yet.")
