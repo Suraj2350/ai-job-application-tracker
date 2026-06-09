@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from matcher import calculate_match_score, find_missing_keywords
 from database import create_table, add_application, get_applications
 
@@ -50,8 +51,11 @@ if st.button("Analyze Match"):
     else:
         st.warning("Please enter both resume text and job description.")
 
+        
+
 
 st.divider()
+
 
 st.header("Save Job Application")
 
@@ -71,6 +75,35 @@ if st.button("Save Application"):
         st.success("Job application saved!")
     else:
         st.warning("Please enter company name and job title.")
+        
+        st.header("Application Dashboard")
+
+applications = get_applications()
+
+if applications:
+    df = pd.DataFrame(
+        applications,
+        columns=["ID", "Company", "Job Title", "Status", "Match Score", "Notes"],
+    )
+
+    total_applications = len(df)
+    average_score = df["Match Score"].mean()
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric("Total Applications", total_applications)
+
+    with col2:
+        st.metric("Average Match Score", f"{average_score:.2f}%")
+
+    status_counts = df["Status"].value_counts()
+
+    st.subheader("Applications by Status")
+    st.bar_chart(status_counts)
+else:
+    st.write("No application data yet.")
+
 
 
 st.divider()
