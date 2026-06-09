@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from matcher import calculate_match_score, find_missing_keywords
-from database import create_table, add_application, get_applications
+from database import create_table, add_application, get_applications, delete_application
 
 st.set_page_config(page_title="AI Job Application Tracker", page_icon="📄")
 
@@ -127,6 +127,11 @@ if applications:
 
         if saved_notes:
             st.write(f"Notes: {saved_notes}")
+
+        if st.button("Delete", key=f"delete_{app_id}"):
+            delete_application(app_id)
+            st.success("Application deleted. Refreshing...")
+            st.rerun()
 
         st.write("---")
 else:

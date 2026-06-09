@@ -70,3 +70,22 @@ def get_applications():
     connection.close()
 
     return applications
+
+def delete_application(application_id):
+    """
+    Delete a job application from the database using its ID.
+    """
+
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM applications
+        WHERE id = ?
+        """,
+        (application_id,),
+    )
+
+    connection.commit()
+    connection.close()
