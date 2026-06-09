@@ -1,7 +1,13 @@
 import streamlit as st
 import pandas as pd
 from matcher import calculate_match_score, find_missing_keywords
-from database import create_table, add_application, get_applications, delete_application
+from database import (
+    create_table,
+    add_application,
+    get_applications,
+    delete_application,
+    update_application_status,
+)
 
 st.set_page_config(page_title="AI Job Application Tracker", page_icon="📄")
 
@@ -127,6 +133,23 @@ if applications:
 
         if saved_notes:
             st.write(f"Notes: {saved_notes}")
+
+        status_options = ["Interested", "Applied", "Interview", "Rejected", "Offer"]
+
+        selected_status = st.selectbox(
+            "Update Status",
+            status_options,
+            index=status_options.index(saved_status),
+            key=f"status_{app_id}",
+        )
+
+        if st.button("Update Status", key=f"update_{app_id}"):
+            update_application_status(app_id, selected_status)
+            st.success("Status updated!")
+            st.rerun()
+
+
+   
 
         if st.button("Delete", key=f"delete_{app_id}"):
             delete_application(app_id)

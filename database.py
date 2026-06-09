@@ -89,3 +89,23 @@ def delete_application(application_id):
 
     connection.commit()
     connection.close()
+
+def update_application_status(application_id, new_status):
+    """
+    Update the status of a saved job application.
+    """
+
+    connection = sqlite3.connect(DATABASE_NAME)
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE applications
+        SET status = ?
+        WHERE id = ?
+        """,
+        (new_status, application_id),
+    )
+
+    connection.commit()
+    connection.close()
