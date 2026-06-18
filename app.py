@@ -9,12 +9,35 @@ from database import (
     update_application_status,
 )
 
-st.set_page_config(page_title="AI Job Application Tracker", page_icon="📄")
+st.set_page_config(
+    page_title="AI Job Application Tracker",
+    page_icon="📄",
+    layout="wide",
+)
 
 create_table()
 
-st.title("AI Job Application Tracker")
-st.write("This app compares your resume with a job description and tracks your job applications.")
+st.sidebar.title("📄 AI Job Tracker")
+st.sidebar.write("Track applications and improve your resume match.")
+
+st.sidebar.markdown("### Features")
+st.sidebar.write("✅ Resume match score")
+st.sidebar.write("✅ Missing skills")
+st.sidebar.write("✅ Job tracker")
+st.sidebar.write("✅ Dashboard")
+st.sidebar.write("✅ Update and delete applications")
+
+st.title("📄 AI Job Application Tracker")
+st.write(
+    "Compare your resume with job descriptions, identify missing skills, "
+    "and track your job applications in one place."
+)
+
+st.info(
+    "Tip: Paste your resume and job description first, then click Analyze Match. "
+    "After that, save the job application below."
+)
+
 
 resume_text = st.text_area("Paste your resume text here", height=200)
 
