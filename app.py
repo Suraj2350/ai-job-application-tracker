@@ -8,6 +8,7 @@ from database import (
     delete_application,
     update_application_status,
 )
+from file_reader import extract_text_from_file
 
 st.set_page_config(
     page_title="AI Job Application Tracker",
@@ -39,7 +40,20 @@ st.info(
 )
 
 
-resume_text = st.text_area("Paste your resume text here", height=200)
+st.subheader("Resume Input")
+
+resume_file = st.file_uploader(
+    "Upload your resume as a PDF or TXT file",
+    type=["pdf", "txt"],
+)
+
+uploaded_resume_text = extract_text_from_file(resume_file)
+
+resume_text = st.text_area(
+    "Or paste your resume text here",
+    value=uploaded_resume_text,
+    height=200,
+)
 
 job_description = st.text_area("Paste the job description here", height=200)
 
