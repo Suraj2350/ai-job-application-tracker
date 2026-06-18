@@ -45,6 +45,7 @@ st.subheader("Resume Input")
 resume_file = st.file_uploader(
     "Upload your resume as a PDF or TXT file",
     type=["pdf", "txt"],
+    key="resume_uploader",
 )
 
 uploaded_resume_text = extract_text_from_file(resume_file)
@@ -55,7 +56,21 @@ resume_text = st.text_area(
     height=200,
 )
 
-job_description = st.text_area("Paste the job description here", height=200)
+st.subheader("Job Description Input")
+
+job_file = st.file_uploader(
+    "Upload the job description as a PDF or TXT file",
+    type=["pdf", "txt"],
+    key="job_uploader",
+)
+
+uploaded_job_text = extract_text_from_file(job_file)
+
+job_description = st.text_area(
+    "Or paste the job description here",
+    value=uploaded_job_text,
+    height=200,
+)
 
 if st.button("Analyze Match"):
     if resume_text.strip() and job_description.strip():
