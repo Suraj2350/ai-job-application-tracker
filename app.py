@@ -24,8 +24,11 @@ st.sidebar.write("Track applications and improve your resume match.")
 st.sidebar.markdown("### Features")
 st.sidebar.write("✅ Resume match score")
 st.sidebar.write("✅ Missing skills")
+st.sidebar.write("✅ Resume upload")
+st.sidebar.write("✅ Job description upload")
 st.sidebar.write("✅ Job tracker")
 st.sidebar.write("✅ Dashboard")
+st.sidebar.write("✅ CSV export")
 st.sidebar.write("✅ Update and delete applications")
 
 st.title("📄 AI Job Application Tracker")
@@ -35,10 +38,9 @@ st.write(
 )
 
 st.info(
-    "Tip: Paste your resume and job description first, then click Analyze Match. "
+    "Tip: Upload or paste your resume and job description first, then click Analyze Match. "
     "After that, save the job application below."
 )
-
 
 st.subheader("Resume Input")
 
@@ -100,7 +102,9 @@ if st.button("Analyze Match"):
             st.subheader("Suggestions")
 
             for keyword in missing_keywords:
-                st.write(f"- Consider adding a project, skill, or experience related to {keyword}.")
+                st.write(
+                    f"- Consider adding a project, skill, or experience related to {keyword}."
+                )
         else:
             st.write("No major missing keywords found.")
 
@@ -109,11 +113,8 @@ if st.button("Analyze Match"):
     else:
         st.warning("Please enter both resume text and job description.")
 
-        
-
 
 st.divider()
-
 
 st.header("Save Job Application")
 
@@ -131,10 +132,14 @@ if st.button("Save Application"):
     if company.strip() and job_title.strip():
         add_application(company, job_title, status, latest_score, notes)
         st.success("Job application saved!")
+        st.rerun()
     else:
         st.warning("Please enter company name and job title.")
-        
-        st.header("Application Dashboard")
+
+
+st.divider()
+
+st.header("Application Dashboard")
 
 applications = get_applications()
 
@@ -159,9 +164,17 @@ if applications:
 
     st.subheader("Applications by Status")
     st.bar_chart(status_counts)
+
+    csv_data = df.to_csv(index=False)
+
+    st.download_button(
+        label="Download Applications as CSV",
+        data=csv_data,
+        file_name="job_applications.csv",
+        mime="text/csv",
+    )
 else:
     st.write("No application data yet.")
-
 
 
 st.divider()
@@ -200,12 +213,9 @@ if applications:
             st.success("Status updated!")
             st.rerun()
 
-
-   
-
         if st.button("Delete", key=f"delete_{app_id}"):
             delete_application(app_id)
-            st.success("Application deleted. Refreshing...")
+            st.success("Application deleted!")
             st.rerun()
 
         st.write("---")
